@@ -1,0 +1,89 @@
+#
+# Full information on Passenger settings is documented here:
+#
+#   http://www.modrails.com/documentation/Users%20guide%20Nginx.html
+#
+
+# The passenger root location is the directory where the Passenger source code
+# and compiled binaries that compries passenger itself.
+passenger_root /usr/libexec/passenger;
+
+#
+# Max pool size is the maximum number of application instances that may be
+# *simultaneously active*.  A larger number results in higher memory usage, but
+# improved ability to handle higher concurrency of HTTP client requests.
+#
+passenger_max_pool_size <%= @worker_count %>;
+
+#
+# If an application instance has not received any traffic after the given number
+# of seconds, then it will be shutdown in order to conserve memory.
+#
+# Decreasing this value means that applications will have to be spawned more
+# often. Since spawning is a relatively slow operation, some visitors may notice
+# a small delay when they visit your Rails/Rack website.
+#
+# If the application has low to no requests overnight then this feature can be
+# utilized in order to free up memory at night for background processing jobs.
+#
+# When set to 0, application instances will not be shutdown unless necessary.
+#
+# Setting the value to 0 is recommended if you’re on a non-shared host that’s
+# only running a few applications, each which must be available at all times.
+#
+passenger_pool_idle_time 3600;
+
+#
+# Default User/group switching.
+#
+# This sets the user/group that the passenger process will run as.
+# For security we do not want application instances running under passenger to
+# run as the root user, thus we set them to run as an unprivileged user.
+#
+passenger_user_switching on; # Yes this is the default, here for clarity.
+# A Rails application is started as the owner of the file config/environment.rb,
+# and a Rack application is started as the owner of the file config.ru.
+# Note that under NO circumstances will Passenger spin up an application
+# running as the root user, it will default to the user/group we set here.
+passenger_default_user deploy;
+passenger_default_group deploy;
+
+#
+# Friendly Error pages
+#
+# Typically we do not want end users to be able to see application error
+# information. This setting prevents that, in order to gather the same
+# information look into the main Nginx error log.
+passenger_friendly_error_pages off;
+
+#
+# Start application instances immediately instead of waiting for the first
+# request. This eliminates the 'first request is slow' "issue".
+#
+# Enable on a case per case basis, may be used multiple times in the http block.
+# Any (single) valid url for the application based on the server { location {} }
+# configurations is permitted.
+#
+# This feature is most effective when used together with passenger_min_instances
+#
+#passenger_pre_start http://localhost:80/;
+#
+
+#
+# Logging
+#
+# 0: Show only errors and warnings, default.
+# 1: Show the most important debugging information. This might be useful for system administrators who are trying to figure out the cause of a problem.
+# 2: Show more debugging information. This is typically only useful for developers.
+# 3: Show even more debugging information.
+#
+# Warning: Do not leave this set above 0 unless actively debugging :)
+#
+passenger_log_level 0;
+
+#
+# The reason we separate out the passenger error/debug log file here is so that
+# debugging applications which are failing to start or are throwing errors is
+# much easier as we do not have to filter out standard web request errors.
+#
+passenger_debug_log_file /var/log/engineyard/nginx/passenger.log;
