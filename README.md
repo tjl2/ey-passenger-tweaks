@@ -15,7 +15,7 @@ worker count and memory limits
 
 Caveats
 =======
-* The syntax in this recipe is set to work with our latest cookbooks version (1.1.116)
+* The syntax in this recipe is set to work with our cookbooks version >=1.1.116
 if you are running any older version of the main cookbooks, then the memory_limit
 variable in the recipe needs to be provided in bytes, not MB
 * This recipe is only made to work with a single app, as it's more of a proof of
