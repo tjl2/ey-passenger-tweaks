@@ -20,3 +20,6 @@ if you are running any older version of the main cookbooks, then the memory_limi
 variable in the recipe needs to be provided in bytes, not MB
 * This recipe is only made to work with a single app, as it's more of a proof of
 concept. It should be tweaked to loop through each app when creating the cron tasks
+* You will restart Nginx twice on every Chef run with this recipe. If that is a problem
+then you will need to investigate keep-filing nginx.conf and loading up a custom stack
+config (maybe custom-stack.conf, rather than stack.conf)
