@@ -26,10 +26,6 @@ if ['app_master', 'app', 'solo'].include?(node[:instance_role])
   end
 
   cron "passenger_monitor_#{app_name}" do
-    action :delete
-  end
-
-  cron "passenger_monitor_#{app_name}" do
     minute  '*'
     hour    '*'
     day     '*'
