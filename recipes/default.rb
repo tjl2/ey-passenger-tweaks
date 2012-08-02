@@ -15,13 +15,9 @@ if ['app_master', 'app', 'solo'].include?(node[:instance_role])
     supports :restart => true
     action :enable
   end
-
-  template "/etc/nginx/stack.conf" do
-    owner node[:owner_name]
-    group node[:owner_name]
-    mode 0644
-    source "stack.conf.erb"
-    variables({:worker_count => worker_count})
+  
+  execute "Alter passenger_max_pool_size" do
+    command "sed -i -f 's/passenger_max_pool_size [0-9]+;/passenger_max_pool_size #{worker_count};/' /etc/nginx/stack.conf"
     notifies :restart, resources(:service => 'nginx')
   end
 
